@@ -12,8 +12,8 @@ impl<'a> Dir<'a> {
 
 #[derive(Debug, Clone, PartialEq)]
 struct Globs<'a> {
-    stack: Vec<&'a DirEntry<'a>>,
     pattern: Pattern,
+    stack: Vec<&'a DirEntry<'a>>,
 }
 
 impl<'a> Globs<'a> {

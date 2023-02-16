@@ -1,22 +1,21 @@
 use crate::{file::File, DirEntry};
-use std::fs;
-use std::path::Path;
+use std::{fs, path::Path};
 
 /// A directory.
 #[derive(Debug, Clone, PartialEq)]
 pub struct Dir<'a> {
-    path: &'a str,
     entries: &'a [DirEntry<'a>],
+    path: &'a str,
 }
 
 impl<'a> Dir<'a> {
     /// Create a new [`Dir`].
     pub const fn new(path: &'a str, entries: &'a [DirEntry<'a>]) -> Self {
-        Dir { path, entries }
+        Dir { entries, path }
     }
 
     /// The full path for this [`Dir`], relative to the directory passed to
-    /// [`crate::include_dir!()`].
+    /// [`crate::include_directory!()`].
     pub fn path(&self) -> &'a Path {
         Path::new(self.path)
     }

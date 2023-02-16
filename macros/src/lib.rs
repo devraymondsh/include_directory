@@ -1,4 +1,4 @@
-//! Implementation details of the `include_dir`.
+//! Implementation details of the `include_directory`.
 //!
 //! You probably don't want to use this crate directly.
 #![cfg_attr(feature = "nightly", feature(track_path, proc_macro_tracked_env))]
@@ -15,7 +15,7 @@ use std::{
 
 /// Embed the contents of a directory in your crate.
 #[proc_macro]
-pub fn include_dir(input: TokenStream) -> TokenStream {
+pub fn include_directory(input: TokenStream) -> TokenStream {
     let tokens: Vec<_> = input.into_iter().collect();
 
     let path = match tokens.as_slice() {
@@ -55,12 +55,12 @@ fn expand_dir(root: &Path, path: &Path) -> proc_macro2::TokenStream {
         if child.is_dir() {
             let tokens = expand_dir(root, &child);
             child_tokens.push(quote! {
-                include_dir::DirEntry::Dir(#tokens)
+                include_directory::DirEntry::Dir(#tokens)
             });
         } else if child.is_file() {
             let tokens = expand_file(root, &child);
             child_tokens.push(quote! {
-                include_dir::DirEntry::File(#tokens)
+                include_directory::DirEntry::File(#tokens)
             });
         } else {
             panic!("\"{}\" is neither a file nor a directory", child.display());
@@ -70,7 +70,7 @@ fn expand_dir(root: &Path, path: &Path) -> proc_macro2::TokenStream {
     let path = normalize_path(root, path);
 
     quote! {
-        include_dir::Dir::new(#path, &[ #(#child_tokens),* ])
+        include_directory::Dir::new(#path, &[ #(#child_tokens),* ])
     }
 }
 
@@ -89,8 +89,13 @@ fn expand_file(root: &Path, path: &Path) -> proc_macro2::TokenStream {
 
     let normalized_path = normalize_path(root, path);
 
+    let mimetype = new_mime_guess::from_path(&normalized_path)
+        .first_or_text_plain()
+        .to_string();
+    let mimetype = mimetype.as_str();
+
     let tokens = quote! {
-        include_dir::File::new(#normalized_path, #literal)
+        include_directory::File::new(#normalized_path, #literal, #mimetype)
     };
 
     match metadata(path) {
@@ -114,7 +119,7 @@ fn metadata(path: &Path) -> Option<proc_macro2::TokenStream> {
     let modified = meta.modified().map(to_unix).ok()?;
 
     Some(quote! {
-        include_dir::Metadata::new(
+        include_directory::Metadata::new(
             std::time::Duration::from_secs(#accessed),
             std::time::Duration::from_secs(#created),
             std::time::Duration::from_secs(#modified),

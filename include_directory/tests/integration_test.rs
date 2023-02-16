@@ -1,11 +1,11 @@
-use include_dir::{include_dir, Dir};
+use include_directory::{include_directory, Dir};
 use std::path::Path;
 use tempfile::TempDir;
 
-static PARENT_DIR: Dir<'_> = include_dir!("$CARGO_MANIFEST_DIR");
+static PARENT_DIR: Dir<'_> = include_directory!("$CARGO_MANIFEST_DIR");
 
 #[test]
-fn included_all_files_in_the_include_dir_crate() {
+fn included_all_files_in_the_include_directory_crate() {
     let root = Path::new(env!("CARGO_MANIFEST_DIR"));
 
     validate_included(&PARENT_DIR, root, root);

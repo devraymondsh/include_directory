@@ -17,7 +17,7 @@ jobs:
           - nightly
           - stable
           # MSRV
-          - 1.56.1
+          - 1.67.1
     steps:
       - uses: actions/checkout@v2
       - uses: actions-rs/toolchain@v1
@@ -83,11 +83,12 @@ jobs:
           command: doc
           args: --workspace --verbose --all-features
       - name: Redirect top-level GitHub Pages
-        run: "echo '<meta http-equiv=\"refresh\" content=\"0; url=include_dir/index.html\" />' > target/doc/index.html"
+        run: "echo '<meta http-equiv=\"refresh\" content=\"0; url=include_directory/index.html\" />' > target/doc/index.html"
         shell: bash
       - name: Upload API Docs
         uses: JamesIves/github-pages-deploy-action@4.1.1
         if: github.ref == 'refs/heads/master'
         with:
+          token: ${{ secrets.TOKEN_FOR_GITHUB }}
           branch: gh-pages
           folder: target/doc

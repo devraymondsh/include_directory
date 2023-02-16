@@ -1,9 +1,10 @@
 //! An extension to the `include_str!()` and `include_bytes!()` macro for
 //! embedding an entire directory tree into your binary.
+//! This is a fork of the `include_dir` crate which gathers files' mimetype at compile-time that can be accessed at run-time.
 //!
 //! # Environment Variables
 //!
-//! When invoking the [`include_dir!()`] macro you should try to avoid using
+//! When invoking the [`include_directory!()`] macro you should try to avoid using
 //! relative paths because `rustc` makes no guarantees about the current
 //! directory when it is running a procedural macro.
 //!
@@ -13,21 +14,24 @@
 //!
 //! Most crates will want to use the `$CARGO_MANIFEST_DIR` or `$OUT_DIR`
 //! variables. For example, to include a folder relative to your crate you might
-//! use `include_dir!("$CARGO_MANIFEST_DIR/assets")`.
+//! use `include_directory!("$CARGO_MANIFEST_DIR/assets")`.
 //!
 //! # Examples
 //!
-//! Here is an example that embeds the `include_dir` crate's source code in a
+//! Here is an example that embeds the `include_directory` crate's source code in a
 //! `static` so we can play around with it.
 //!
 //! ```rust
-//! use include_dir::{include_dir, Dir};
+//! use include_directory::{include_directory, Dir};
 //! use std::path::Path;
 //!
-//! static PROJECT_DIR: Dir<'_> = include_dir!("$CARGO_MANIFEST_DIR");
+//! static PROJECT_DIR: Dir<'_> = include_directory!("$CARGO_MANIFEST_DIR");
 //!
 //! // of course, you can retrieve a file by its full path
 //! let lib_rs = PROJECT_DIR.get_file("src/lib.rs").unwrap();
+//!
+//! // you can get the mimetype by doing
+//! let mimetype = lib_rs.mimetype();
 //!
 //! // you can also inspect the file's contents
 //! let body = lib_rs.contents_utf8().unwrap();
@@ -60,7 +64,7 @@
 //!
 //! # Compile Time Considerations
 //!
-//! While the `include_dir!()` macro executes relatively quickly, it expands
+//! While the `include_directory!()` macro executes relatively quickly, it expands
 //! to a fairly large amount of code (all your files are essentially embedded
 //! as Rust byte strings) and this may have a flow-on effect on the build
 //! process.
@@ -73,7 +77,7 @@
 //! a total of 64 MB, with a full build taking about 1.5 seconds and 200MB of
 //! RAM to generate a 7MB binary.
 //!
-//! Using `include_dir!("target/")` increased the compile time to 5 seconds
+//! Using `include_directory!("target/")` increased the compile time to 5 seconds
 //! and used 730MB of RAM, generating a 72MB binary.
 //!
 //! [tracked-env]: https://github.com/rust-lang/rust/issues/74690
@@ -104,7 +108,7 @@ mod globs;
 pub use crate::metadata::Metadata;
 
 pub use crate::{dir::Dir, dir_entry::DirEntry, file::File};
-pub use include_dir_macros::include_dir;
+pub use include_directory_macros::include_directory;
 
 #[doc = include_str!("../README.md")]
 #[allow(dead_code)]
