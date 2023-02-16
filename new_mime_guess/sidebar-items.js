@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"fn":["from_ext","from_path"],"struct":["Iter","IterRaw","Mime","MimeGuess"]};
