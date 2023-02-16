@@ -2,6 +2,7 @@
 authors = ["Mahdi Sharifi <devraymondsh@gmail.com>"]
 categories = ["development-tools", "web-programming", "game-engines"]
 description = "Embed the contents of a directory in your binary"
+documentation = "https://docs.rs/include_directory"
 edition = "2021"
 keywords = ["assets", "include", "embed", "dir"]
 license = "MIT"
@@ -9,7 +10,7 @@ name = "include_directory"
 readme = "README.md"
 repository = "https://github.com/devraymondsh/include_directory"
 rust-version = "1.67.1"
-version = "0.1.0"
+version = "0.1.1"
 
 [dependencies]
 
